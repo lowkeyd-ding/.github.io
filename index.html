@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>24点速算挑战 - 小学生版</title>
     <style>
         body {
@@ -10,14 +10,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* 顶部对齐，让内容在小屏上自然下沉 */
             min-height: 100vh;
             margin: 0;
             background-color: #e0d8c0;
             color: #333;
             text-align: center;
             user-select: none;
-            overflow: hidden;
+            overflow-y: auto; /* 允许在必要时垂直滚动 */
+            -webkit-overflow-scrolling: touch; /* 提升 iOS 滚动体验 */
         }
 
         .header {
@@ -25,13 +26,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 8px 15px; /* 进一步缩小内边距 */
             box-sizing: border-box;
             background-color: #c9c0ac;
             border-bottom: 1px solid #b5ad98;
-            font-size: 1.2em;
+            font-size: 1.1em; /* 略微缩小字体 */
             color: #555;
-            position: fixed;
+            position: sticky; /* 头部固定在顶部，不占用实际布局空间 */
             top: 0;
             left: 0;
             z-index: 1000;
@@ -43,7 +44,7 @@
         .header .target-display {
             background-color: #333;
             color: white;
-            padding: 5px 15px;
+            padding: 4px 12px; /* 略微缩小内边距 */
             border-radius: 20px;
             font-weight: bold;
             display: flex;
@@ -51,28 +52,29 @@
             justify-content: center;
             margin: 0 auto;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            font-size: 1.5em;
+            font-size: 1.3em; /* 略微缩小字体 */
         }
         .header .target-text {
             font-size: 0.7em;
-            margin-right: 5px;
+            margin-right: 4px; /* 略微缩小间距 */
         }
 
-        /* 新增计时器和分数显示样式 */
         .game-stats {
             display: flex;
-            gap: 15px;
-            font-size: 1.1em;
+            gap: 10px; /* 缩小间距 */
+            font-size: 1em; /* 略微缩小字体 */
             color: #555;
-            margin-bottom: 10px; /* 距离下方内容的间距 */
+            margin-top: 15px; /* 从 header 下方开始 */
+            margin-bottom: 8px; /* 缩小与下方内容的间距 */
             width: 100%;
             justify-content: center;
-            padding-top: 60px; /* 为顶部 Header 留出空间 */
+            padding: 0 15px; /* 左右内边距 */
+            box-sizing: border-box;
         }
         .stat-item {
             background-color: #f0f0f0;
-            padding: 5px 10px;
-            border-radius: 8px;
+            padding: 4px 8px; /* 缩小内边距 */
+            border-radius: 6px; /* 缩小圆角 */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             font-weight: bold;
         }
@@ -81,26 +83,27 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: center; /* 垂直居中内容 */
             align-items: center;
-            /* padding-top: 80px; 头部和统计区域已经占据了空间 */
-            padding-bottom: 20px;
+            padding: 10px 0; /* 减少垂直内边距 */
             box-sizing: border-box;
             width: 100%;
+            min-height: 0; /* 允许flex项目缩小 */
         }
 
         .result-display {
             background-color: #fff;
-            border-radius: 15px;
-            padding: 15px 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            min-width: 280px;
-            font-size: 2em;
+            border-radius: 12px; /* 缩小圆角 */
+            padding: 12px 20px; /* 进一步缩小内边距 */
+            margin-bottom: 15px; /* 缩小底部外边距 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            min-width: 260px; /* 进一步缩小最小宽度 */
+            max-width: 90%; /* 最大宽度限制 */
+            font-size: 1.8em; /* 进一步缩小字体大小 */
             font-weight: bold;
             color: #4a4a4a;
             height: auto;
-            min-height: 60px;
+            min-height: 55px; /* 略微减小最小高度 */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -114,11 +117,11 @@
             border: 3px solid #28a745;
         }
         .message {
-            margin-bottom: 15px;
-            font-size: 1em;
+            margin-bottom: 10px; /* 缩小底部外边距 */
+            font-size: 0.9em; /* 进一步缩小字体大小 */
             color: #666;
-            min-height: 1.5em;
-            padding: 0 10px;
+            min-height: 1.2em; /* 略微减小最小高度 */
+            padding: 0 8px; /* 左右内边距 */
             box-sizing: border-box;
         }
         .message.error {
@@ -131,7 +134,7 @@
             color: #007bff;
         }
         .message.solution {
-            font-size: 1.1em;
+            font-size: 1em; /* 答案字体略小一些 */
             color: #333;
             font-weight: bold;
         }
@@ -139,39 +142,39 @@
 
         .buttons-grid {
             display: grid;
-            grid-template-columns: repeat(3, 90px);
-            grid-template-rows: repeat(3, 90px);
-            gap: 12px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(3, 85px); /* 进一步缩小按钮尺寸 */
+            grid-template-rows: repeat(3, 85px);   /* 进一步缩小按钮尺寸 */
+            gap: 10px; /* 缩小按钮间距 */
+            margin-bottom: 20px; /* 缩小底部外边距 */
         }
 
         .btn {
-            width: 90px;
-            height: 90px;
+            width: 85px; /* 进一步缩小按钮尺寸 */
+            height: 85px; /* 进一步缩小按钮尺寸 */
             background-color: #333;
             color: white;
-            border-radius: 15px;
-            font-size: 2.5em;
+            border-radius: 12px; /* 缩小圆角 */
+            font-size: 2.2em; /* 进一步缩小字体大小 */
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 略微缩小阴影 */
             transition: transform 0.1s ease, background-color 0.1s ease;
             -webkit-tap-highlight-color: transparent;
         }
         .btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            transform: translateY(1px); /* 缩小点击效果 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         .btn.operator {
             background-color: #6e6e6e;
-            font-size: 3em;
+            font-size: 2.8em; /* 运算符字体略大 */
         }
         .btn.special {
             background-color: #4CAF50;
-            font-size: 2.5em;
+            font-size: 2.2em;
         }
         .btn.disabled {
             background-color: #ccc;
@@ -186,26 +189,27 @@
         /* 被选中的数字按钮样式 */
         .btn.selected {
             background-color: #007bff;
-            border: 3px solid #0056b3;
-            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+            border: 2px solid #0056b3; /* 缩小边框 */
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* 缩小阴影 */
         }
 
         /* 底部控制按钮 */
         .bottom-controls {
             display: flex;
-            gap: 12px;
-            margin-top: 15px;
+            gap: 10px; /* 缩小间距 */
+            margin-top: 10px; /* 缩小顶部外边距 */
             flex-wrap: wrap;
             justify-content: center;
+            padding-bottom: env(safe-area-inset-bottom, 10px); /* 适配刘海屏底部安全区 */
         }
         .control-btn {
             background-color: #f0f0f0;
             color: #555;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 1em;
+            padding: 7px 14px; /* 缩小内边距 */
+            border-radius: 7px; /* 缩小圆角 */
+            font-size: 0.9em; /* 缩小字体大小 */
             cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: background-color 0.1s ease;
         }
         .control-btn:hover {
@@ -384,4 +388,442 @@
 
                                 newExprPart = `${needsParen1 ? '(' + expr1 + ')' : expr1}${OPS_DISPLAY_MAP[op]}${needsParen2 ? '(' + expr2 + ')' : expr2}`;
 
-                                findSolutionRecursive([...remainingNums,
+                                findSolutionRecursive([...remainingNums, result], [...remainingExprs, newExprPart]);
+                                if (foundSolution) return;
+                            } catch (e) {
+                                // 忽略错误
+                            }
+                        }
+                    }
+                }
+            }
+
+            const initialNumsCopy = [...nums];
+            const initialExprs = initialNumsCopy.map(num => String(num));
+            findSolutionRecursive(initialNumsCopy, initialExprs);
+
+            if (foundSolution) {
+                if (foundSolution.startsWith('(') && foundSolution.endsWith(')')) {
+                    const innerContent = foundSolution.substring(1, foundSolution.length - 1);
+                    if (!innerContent.includes('(') && !innerContent.includes(')')) {
+                        foundSolution = innerContent;
+                    }
+                }
+                return [foundSolution];
+            }
+            return [];
+        }
+
+        function getPermutations(arr) {
+            if (arr.length === 0) return [[]];
+            const first = arr[0];
+            const rest = arr.slice(1);
+            const permsWithoutFirst = getPermutations(rest);
+            const allPerms = [];
+
+            permsWithoutFirst.forEach(perm => {
+                for (let i = 0; i <= perm.length; i++) {
+                    const permWithFirst = [...perm.slice(0, i), first, ...perm.slice(i)];
+                    allPerms.push(permWithFirst);
+                }
+            });
+            return allPerms;
+        }
+
+        function generateNumbers() {
+            let nums;
+            let solutions;
+            do {
+                nums = Array.from({ length: 4 }, () => Math.floor(Math.random() * 13) + 1);
+                solutions = solve24Points(nums);
+            } while (solutions.length === 0);
+            return nums;
+        }
+
+        // --- UI 更新函数 ---
+
+        function updateDisplay() {
+            // 确保数字按钮的文本正确显示
+            numButtons.forEach((btn, index) => {
+                if (buttonValues[index] !== null && typeof buttonValues[index] === 'number') {
+                    btn.textContent = Math.round(buttonValues[index] * 100) / 100;
+                } else {
+                    btn.textContent = ''; // 如果是null或非数字，则清空
+                }
+            });
+
+            if (currentResult === null && selectedFirstNumValue === null) {
+                resultDisplay.textContent = '请选择一个数字开始';
+            } else {
+                let displayString = currentExpressionDisplay;
+                // 确保 currentResult 是有效数字才显示
+                if (currentResult !== null && typeof currentResult === 'number' && !isNaN(currentResult)) {
+                    let displayValue = Math.round(currentResult * 100) / 100;
+                    displayString = `${displayString} = ${displayValue}`;
+                }
+                resultDisplay.textContent = displayString;
+            }
+
+            messageDisplay.textContent = '';
+            messageDisplay.className = 'message';
+
+            let availableCount = buttonValues.filter(val => val !== null && typeof val === 'number').length;
+            if (availableCount === 1 && isCloseToTarget(currentResult)) {
+                // 胜利逻辑
+                resultDisplay.classList.add('win');
+                messageDisplay.textContent = '恭喜你，算出了24！🎉';
+                messageDisplay.className = 'message success';
+                completedProblems++;
+                completedCountDisplay.textContent = completedProblems;
+                disableAllButtons(); // 禁用当前游戏按钮
+                
+                if (gameActive && timeLeft > 0) {
+                    setTimeout(() => {
+                        newProblem();
+                    }, 1000);
+                }
+                return;
+            } else {
+                resultDisplay.classList.remove('win');
+            }
+        }
+
+        function enableButtons() {
+            // 首先将所有游戏操作按钮都禁用
+            numButtons.forEach(btn => {
+                btn.classList.add('disabled');
+                btn.classList.remove('selected'); // 确保清除选中样式
+            });
+            for (const key in opButtons) {
+                opButtons[key].classList.add('disabled');
+            }
+            undoBtn.classList.add('disabled');
+            
+            answerBtn.classList.remove('disabled'); // 答案按钮始终可用
+
+            if (!gameActive) { // 游戏未激活时，无需再处理其他按钮状态
+                return;
+            }
+
+            // 游戏激活后的按钮启用逻辑
+            if (selectedFirstNumValue === null) { // 初始状态或完成一步计算后，等待选择第一个数字
+                numButtons.forEach((btn, index) => {
+                    if (buttonValues[index] !== null && typeof buttonValues[index] === 'number') {
+                        btn.classList.remove('disabled'); // 启用有数字的按钮
+                    }
+                });
+            } else if (selectedOperator === null) { // 已经选择了第一个数字，等待选择运算符
+                for (const key in opButtons) {
+                    opButtons[key].classList.remove('disabled'); // 启用运算符
+                }
+                if (selectedFirstNumIndex !== null && numButtons[selectedFirstNumIndex]) {
+                    numButtons[selectedFirstNumIndex].classList.remove('disabled'); // 确保被选中的数字按钮仍然可高亮
+                    numButtons[selectedFirstNumIndex].classList.add('selected'); // 高亮被选中的数字
+                }
+                // 所有未选中的数字按钮保持禁用
+                numButtons.forEach((btn, index) => {
+                    if (index !== selectedFirstNumIndex) {
+                        btn.classList.add('disabled');
+                    }
+                });
+            } else { // 已经选择了运算符，等待选择第二个数字
+                numButtons.forEach((btn, index) => {
+                    if (buttonValues[index] !== null && typeof buttonValues[index] === 'number' && index !== selectedFirstNumIndex) {
+                        btn.classList.remove('disabled'); // 启用未被使用且非第一个选中的数字
+                    } else {
+                        btn.classList.add('disabled'); // 禁用其他数字
+                    }
+                });
+                for (const key in opButtons) {
+                    opButtons[key].classList.add('disabled'); // 运算符禁用
+                }
+            }
+
+            if (history.length > 0) { // 有历史记录才能撤回
+                undoBtn.classList.remove('disabled');
+            }
+            
+            let availableCount = buttonValues.filter(val => val !== null && typeof val === 'number').length;
+            if (availableCount === 1 && !isCloseToTarget(currentResult)) {
+                disableAllButtons();
+                if(gameActive) {
+                    messageDisplay.textContent = '这道题没有可行的操作了。请“重新开始”或“新游戏”！';
+                    messageDisplay.className = 'message error';
+                }
+            }
+        }
+
+
+        function disableAllButtons() {
+            numButtons.forEach(btn => {
+                btn.classList.add('disabled');
+                btn.classList.remove('selected'); // 确保移除选中样式
+            });
+            for (const key in opButtons) {
+                opButtons[key].classList.add('disabled');
+            }
+            undoBtn.classList.add('disabled');
+            // answerBtn.classList.add('disabled'); // 答案按钮可以一直看
+        }
+
+        // --- 事件处理函数 ---
+
+        function saveState() {
+            history.push({
+                buttonValues: [...buttonValues],
+                buttonStates: [...buttonStates], // 实际不怎么用 buttonStates
+                currentResult: currentResult,
+                currentExpressionDisplay: currentExpressionDisplay,
+                selectedFirstNumValue: selectedFirstNumValue,
+                selectedFirstNumIndex: selectedFirstNumIndex,
+                selectedOperator: selectedOperator
+            });
+        }
+
+        function restoreState(state) {
+            buttonValues = [...state.buttonValues];
+            // buttonStates 实际上可以根据 buttonValues 动态生成
+            buttonStates = buttonValues.map(val => val !== null && typeof val === 'number');
+
+            currentResult = state.currentResult;
+            currentExpressionDisplay = state.currentExpressionDisplay;
+            selectedFirstNumValue = state.selectedFirstNumValue;
+            selectedFirstNumIndex = state.selectedFirstNumIndex;
+            selectedOperator = state.selectedOperator;
+
+            updateDisplay();
+            enableButtons();
+        }
+
+        function handleNumClick(event) {
+            if (!gameActive || event.target.classList.contains('disabled')) return;
+
+            const clickedNumIndex = parseInt(event.target.dataset.index);
+            const clickedNumValue = buttonValues[clickedNumIndex];
+
+            // 确保点击的按钮有有效数字且当前状态允许点击
+            if (clickedNumValue === null || typeof clickedNumValue !== 'number' || !buttonValues.includes(clickedNumValue)) return; 
+
+            saveState();
+
+            if (selectedFirstNumValue === null) {
+                // 第一次选择数字
+                selectedFirstNumValue = clickedNumValue;
+                selectedFirstNumIndex = clickedNumIndex;
+                currentExpressionDisplay = `${Math.round(selectedFirstNumValue * 100) / 100}`;
+                
+            } else if (selectedOperator !== null) {
+                // 选择了运算符后，选择第二个数字
+                const num2Value = clickedNumValue; // 第二个数字的值
+                const opInternal = OPS_INTERNAL_MAP[selectedOperator];
+
+                const calculatedResult = evaluate(selectedFirstNumValue, opInternal, num2Value);
+
+                if (isNaN(calculatedResult) || !isFinite(calculatedResult) || calculatedResult < 0 || (opInternal === '/' && (num2Value === 0 || !Number.isInteger(calculatedResult)))) { // 增加除数为零、结果为负、非整数结果的判断
+                    messageDisplay.textContent = '错误：除数为零、结果无效/为负或非整数！↩️ 撤回重试。';
+                    messageDisplay.className = 'message error';
+                    undoLastAction();
+                    return;
+                }
+
+                let firstPartDisplay = Math.round(selectedFirstNumValue * 100) / 100;
+                let secondPartDisplay = Math.round(num2Value * 100) / 100;
+                
+                // 优先考虑括号，但如果表达式只有一个数字，则不加括号
+                let expr1_display = currentExpressionDisplay.includes('(') ? currentExpressionDisplay : String(firstPartDisplay);
+                let expr2_display = String(secondPartDisplay);
+
+                // 根据运算符的优先级添加括号，确保显示正确
+                const needsParen1 = (selectedOperator === '×' || selectedOperator === '➗') && (expr1_display.includes('+') || expr1_display.includes('-'));
+                const needsParen2 = (selectedOperator === '×' || selectedOperator === '➗') && (expr2_display.includes('+') || expr2_display.includes('-'));
+                
+                currentExpressionDisplay = `${needsParen1 ? '(' + expr1_display + ')' : expr1_display} ${selectedOperator} ${needsParen2 ? '(' + expr2_display + ')' : expr2_display}`;
+                currentResult = calculatedResult;
+
+                // 更新按钮值：将计算结果赋值给第一个选中的按钮，第二个按钮清空
+                buttonValues[selectedFirstNumIndex] = calculatedResult;
+                buttonValues[clickedNumIndex] = null;
+
+                // 重置选择状态
+                selectedFirstNumValue = null;
+                selectedFirstNumIndex = null;
+                selectedOperator = null;
+                
+            } else {
+                messageDisplay.textContent = '请先选择一个运算符！';
+                messageDisplay.className = 'message error';
+                history.pop();
+                return;
+            }
+            updateDisplay();
+            enableButtons(); // 每次点击后都重新评估按钮状态
+        }
+
+        function handleOpClick(event) {
+            if (!gameActive || event.target.classList.contains('disabled')) return;
+
+            const clickedOpDisplay = event.target.textContent;
+
+            saveState();
+
+            if (selectedFirstNumValue !== null && selectedOperator === null) {
+                selectedOperator = clickedOpDisplay;
+                currentExpressionDisplay = `${Math.round(selectedFirstNumValue * 100) / 100} ${clickedOpDisplay} `;
+            } else {
+                messageDisplay.textContent = '请先选择一个数字！';
+                messageDisplay.className = 'message error';
+                history.pop();
+                return;
+            }
+            updateDisplay();
+            enableButtons();
+        }
+
+        function undoLastAction() {
+            if (!gameActive) return;
+            if (history.length > 0) {
+                const prevState = history.pop();
+                restoreState(prevState);
+            }
+        }
+
+        function resetCurrentGame() {
+            if (!gameActive) return;
+            // 确保每次重置都从原始的 initialNumbers 数组开始，而不是修改过的 buttonValues
+            newProblem(initialState.initialNumbers); // 重新生成本题的数字
+            messageDisplay.textContent = '本题已重置。';
+            messageDisplay.className = 'message tip';
+        }
+
+        function startNewGameSession() {
+            clearInterval(timerInterval);
+            timeLeft = GAME_DURATION;
+            completedProblems = 0;
+            completedCountDisplay.textContent = completedProblems;
+            gameActive = true;
+
+            updateTimerDisplay();
+            timerInterval = setInterval(updateTimer, 1000);
+
+            bestScore = parseInt(localStorage.getItem('best24PointsScore') || '0');
+            bestScoreDisplay.textContent = bestScore;
+
+            newProblem(); // 开始第一道题
+            messageDisplay.textContent = '游戏开始！';
+            messageDisplay.className = 'message success';
+        }
+
+        // newProblem 函数可以接受一个可选的 nums 参数，用于重置当前题
+        function newProblem(numsToUse = null) {
+            const newNums = numsToUse || generateNumbers(); // 如果提供了数字，就用，否则生成新的
+            initialState = { // 存储初始状态以便重置
+                initialNumbers: [...newNums]
+            };
+
+            buttonValues = [...newNums];
+            buttonStates = Array(4).fill(true);
+            history = [];
+
+            currentResult = null;
+            currentExpressionDisplay = '';
+
+            selectedFirstNumValue = null;
+            selectedFirstNumIndex = null;
+            selectedOperator = null;
+
+            // 确保数字按钮的文本和事件监听器正确设置
+            numButtons.forEach((btn, index) => {
+                btn.textContent = newNums[index]; // 修复：确保设置文本
+                btn.dataset.index = index;
+                // 只在初始化时绑定一次事件，避免重复绑定
+                if (!btn.onclick) { 
+                    btn.onclick = handleNumClick;
+                }
+            });
+
+            for (const key in opButtons) {
+                if (!opButtons[key].onclick) {
+                    opButtons[key].onclick = handleOpClick;
+                }
+            }
+
+            updateDisplay();
+            enableButtons();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timerInterval);
+                gameActive = false;
+                disableAllButtons();
+                messageDisplay.textContent = `时间到！你一共完成了 ${completedProblems} 道题。`;
+                messageDisplay.className = 'message tip';
+                
+                if (completedProblems > bestScore) {
+                    bestScore = completedProblems;
+                    localStorage.setItem('best24PointsScore', bestScore);
+                    bestScoreDisplay.textContent = bestScore;
+                    messageDisplay.textContent += ` 新纪录！👏 最佳成绩：${bestScore}`;
+                } else {
+                     messageDisplay.textContent += ` 本次成绩：${completedProblems}。`;
+                }
+            }
+        }
+
+        function showAnswer() {
+            // 在游戏结束后，答案按钮可以看
+            if(!gameActive) { // 如果游戏已经结束，直接显示答案
+                const solutions = solve24Points(initialState.initialNumbers);
+                if (solutions.length > 0) {
+                    messageDisplay.textContent = `参考答案：${solutions[0]}`;
+                    messageDisplay.className = 'message solution';
+                } else {
+                    messageDisplay.textContent = '抱歉，这组数字似乎没有解法。'; // 理论上不会出现
+                    messageDisplay.className = 'message error';
+                }
+                return;
+            }
+
+            // 如果游戏进行中
+            if (history.length === 0 && selectedFirstNumValue === null) {
+                messageDisplay.textContent = '请先进行一些操作或开始新游戏再查看答案。';
+                messageDisplay.className = 'message error';
+                return;
+            }
+            
+            // 如果玩家已经做了一些操作，也允许看当前题目的答案
+            const solutions = solve24Points(initialState.initialNumbers);
+            if (solutions.length > 0) {
+                messageDisplay.textContent = `参考答案：${solutions[0]}`;
+                messageDisplay.className = 'message solution';
+            } else {
+                messageDisplay.textContent = '抱歉，这组数字似乎没有解法。';
+                messageDisplay.className = 'message error';
+            }
+        }
+
+        // --- 页面加载完成时 ---
+        window.onload = () => {
+            newGameBtn.onclick = startNewGameSession;
+            resetCurrentBtn.onclick = resetCurrentGame;
+            answerBtn.onclick = showAnswer;
+
+            bestScore = parseInt(localStorage.getItem('best24PointsScore') || '0');
+            bestScoreDisplay.textContent = bestScore;
+
+            updateTimerDisplay();
+            disableAllButtons(); // 初始状态下禁用所有游戏按钮，等待点击"新游戏"
+            resultDisplay.textContent = '点击“新游戏”开始挑战！';
+        };
+    </script>
+</body>
+</html>
